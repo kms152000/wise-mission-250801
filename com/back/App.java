@@ -3,11 +3,11 @@ package com.back;
 import java.util.Scanner;
 
 public class App {
-        Scanner sc = new Scanner(System.in);
+    Scanner sc = new Scanner(System.in);
 
-        int lastNo = 0;
-        WiseSaying[] wiseSayings = new WiseSaying[100];
-        int lastIndex = 0;
+    int lastNo = 0;
+    WiseSaying[] wiseSayings = new WiseSaying[100];
+    int lastIndex = 0;
 
     public void run() {
 
@@ -40,7 +40,7 @@ public class App {
 
         WiseSaying wiseSaying = write(saying, author);
 
-        System.out.println("%d번 명언이 등록되었습니다.".formatted(lastNo));
+        System.out.println("%d번 명언이 등록되었습니다.".formatted(wiseSaying.id));
     }
 
     public WiseSaying write(String saying, String author) {
@@ -81,7 +81,7 @@ public class App {
     public void actionDelete(String command) {
         String[] commandBits = command.split("=");
 
-        if(commandBits.length < 2) {
+        if (commandBits.length < 2) {
             System.out.println("번호를 입력해주세요.");
             return;
         }
@@ -89,22 +89,34 @@ public class App {
         String idStr = commandBits[1];
         int id = Integer.parseInt(idStr);
 
-        delete(id);
-        System.out.println("%d번 명언이 삭제되었습니다.".formatted(id));
+        boolean result = delete(id);
+
+        if (result) {
+            System.out.println("%d번 명언이 삭제되었습니다.".formatted(id));
+        } else {
+            System.out.println("%d번 명언은 존재하지 않습니다.".formatted(id));
+        }
     }
 
-    public void delete(int id) {
+    public boolean delete(int id) {
         int deleteTargetIndex = -1; // 삭제하고 싶은 명언이 저장된 위치
 
         for (int i = 0; i < lastIndex; i++) {
-            if(wiseSayings[i].id == id) {
+            if (wiseSayings[i].id == id) {
                 deleteTargetIndex = i;
+                break;
             }
+        }
+
+        if (deleteTargetIndex == -1) {
+            return false; // 삭제할 명언이 존재하지 않음
         }
 
         for (int i = deleteTargetIndex; i < lastIndex; i++) {
             wiseSayings[i] = wiseSayings[i + 1];
         }
         lastIndex--;
+
+        return true; // 삭제 성공
     }
 }
